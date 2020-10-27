@@ -1,0 +1,15 @@
+{
+  "eptune": {
+    "Overview": "/",
+    "Algorithms": "algorithms.html",
+    "Parameter": "parameter.html",
+    "Crossover": "crossover.html",
+    "Mutation": "mutation.html",
+    "Utils": "utils.html",
+    "Sample Cases": "sample_cases.html",
+    "Quick": "quick.html",
+    "Scikit-Learn": "sklearn.html",
+    "Using `dict` as base class": "demo_dict_base_class.html",
+    "Using list as base class": "demo_list_base_class.html"
+  }
+}
