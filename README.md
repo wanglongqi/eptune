@@ -4,7 +4,7 @@
 
 ![CI](https://github.com/wanglongqi/eptune/workflows/CI/badge.svg)
 
-![Logo](nbs/eptune.png)
+![Logo](https://github.com/wanglongqi/eptune/raw/master/nbs/eptune.png)
 
 ## Install
 
@@ -12,7 +12,7 @@
 
 ## How to use
 
-Using following lines can fine tune MNIST dataset with 4-Fold CV performance using the `qtuneSimple` function.
+Using following lines can fine tune MNIST dataset with 5-Fold CV performance using the `qtuneSimple` function.
 
 ```python
 from eptune.sample_cases import DigitsCV
@@ -32,7 +32,7 @@ cv_svc_digits = DigitsCV(SVC())
 
 
 def evaluate(params):
-    return cv_svc_digits.cv_loss_with_params(callbacks=tuple(), **params)
+    return cv_svc_digits.cv_loss_with_params(callbacks=tuple(), cv=5, **params)
 
 
 # Call `qtuneSimple`

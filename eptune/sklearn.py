@@ -113,16 +113,16 @@ class ScikitLearnerCV:
 
     @lru_cache(maxsize=None)
     def cv_loss_with_params(self,
-                             loss_func=None,
-                             callbacks=tuple(),
-                             groups=None,
-                             cv=None,
-                             n_jobs=None,
-                             verbose=0,
-                             pre_dispatch='2*n_jobs',
-                             method='predict',
-                             fit_params=None,
-                             **params):
+                            loss_func=None,
+                            callbacks=tuple(),
+                            groups=None,
+                            cv=None,
+                            n_jobs=None,
+                            verbose=0,
+                            pre_dispatch='2*n_jobs',
+                            method='predict',
+                            fit_params=None,
+                            **params):
         """Calculate loss of the estimator on validation set, and also the values of callbacks.
 
         **Parameters**
@@ -142,6 +142,13 @@ class ScikitLearnerCV:
                                      self.y,
                                      loss_func=loss_func,
                                      callbacks=callbacks,
+                                     groups=groups,
+                                     cv=cv,
+                                     n_jobs=n_jobs,
+                                     verbose=verbose,
+                                     pre_dispatch=pre_dispatch,
+                                     method=method,
+                                     fit_params=fit_params,
                                      **params)
 
     def loss_with_params(self,
