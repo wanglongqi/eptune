@@ -7,7 +7,7 @@ import random
 
 def mutDictRand(individual, params=None, indpb=0.6):
     "Mutation function (for dict base class) that changes the value of an individual at the probability of `indpb`."
-    if params==None:
+    if params is None:
         params = individual.params
     for p in params:
         if p.name in individual:
@@ -17,7 +17,7 @@ def mutDictRand(individual, params=None, indpb=0.6):
 
 def mutRand(individual, params=None, indpb=0.6):
     "Mutation function (for list base class) that changes the value of an individual at the probability of `indpb`."
-    if params==None:
+    if params is None:
         params = individual.params
     for idx, p in enumerate(params):
         if random.random() < indpb:

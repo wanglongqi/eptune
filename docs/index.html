@@ -195,6 +195,440 @@ nb_path: "nbs/index.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Iterator-Interface">Iterator Interface<a class="anchor-link" href="#Iterator-Interface"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>An iterator interface, <a href="/eptune/quick.html#qtuneIterate"><code>qtuneIterate</code></a>, is provided in the <a href="/eptune/quick.html"><code>quick</code></a> module, so that one can treat the optimization procedure as a iterative process. When the iterator exhausted, the optimization process is ended. Following is an example:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">eptune.quick</span> <span class="kn">import</span> <span class="n">qtuneIterate</span>
+<span class="kn">from</span> <span class="nn">eptune.parameter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># Prameter space to search</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">LogFloatParameter</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">),</span>
+    <span class="n">CategoricalParameter</span><span class="p">([</span><span class="s1">&#39;rbf&#39;</span><span class="p">],</span> <span class="s1">&#39;kernel&#39;</span><span class="p">),</span>
+    <span class="n">LogFloatParameter</span><span class="p">([</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">],</span> <span class="s1">&#39;gamma&#39;</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">qi</span> <span class="o">=</span> <span class="n">qtuneIterate</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">n_pop</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mutpb</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cxpb</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Directly call this class will return an object that can be used as an iterator.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">iterator</span> <span class="o">=</span> <span class="n">qi</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For each iteration, the iterator will return two elements. The first element is the parameters to be used to in the estimator or function, the other element is the Condition object used in <a href="/eptune/quick.html#qtuneIterate.set_result"><code>qtuneIterate.set_result</code></a> function.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+<span class="n">p</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;C&#39;: 68.63739474770763, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 26.031847870785032}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One can do what ever you want here, such as query database, download web page, or even ask for user's input. When all the things necessary are done, one need to call <a href="/eptune/quick.html#qtuneIterate.set_result"><code>qtuneIterate.set_result</code></a> to return the control to the package and generate next parameters for next iteration.</p>
+<p>In this example, the same function in above example is used to get the loss of the estimator with above parameters.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">eptune.sample_cases</span> <span class="kn">import</span> <span class="n">DigitsCV</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+<span class="c1"># Define objective function</span>
+<span class="n">cv_svc_digits</span> <span class="o">=</span> <span class="n">DigitsCV</span><span class="p">(</span><span class="n">SVC</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">cv_svc_digits</span><span class="o">.</span><span class="n">cv_loss_with_params</span><span class="p">(</span><span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">loss</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>([-0.10072342793544797], [])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After we get the loss value, we can use <a href="/eptune/quick.html#qtuneIterate.set_result"><code>qtuneIterate.set_result</code></a> to return the control to the package as follows:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qi</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+<span class="n">p</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;C&#39;: 0.2946803132334556, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 23.15859147163727}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Repeat this process until the iterator is exhausted, then the optimization is done. In practice, you can simply use a for loop to do the job.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qi</span> <span class="o">=</span> <span class="n">qtuneIterate</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">n_pop</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mutpb</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">cxpb</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ngen</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">qi</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Calculating loss for </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loss is </span><span class="si">{</span><span class="n">loss</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">qi</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Calculating loss for {&#39;C&#39;: 68.63739474770763, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 26.031847870785032}
+Loss is [-0.10072342793544797]
+Calculating loss for {&#39;C&#39;: 0.2946803132334556, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 23.15859147163727}
+Loss is [-0.10072342793544797]
+Calculating loss for {&#39;C&#39;: 114.8674353163588, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.803387600412278}
+Loss is [-0.12186978297161936]
+Calculating loss for {&#39;C&#39;: 0.015513010158735236, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00015359594420534672}
+Loss is [-0.1580411797440178]
+Calculating loss for {&#39;C&#39;: 10.767917726598592, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.40968553409851616}
+Loss is [-0.1018363939899833]
+Calculating loss for {&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00016010548864384288}
+Loss is [-0.9677239844184753]
+Calculating loss for {&#39;C&#39;: 34.3237004592151, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 38.732334272432226}
+Loss is [-0.10072342793544797]
+Calculating loss for {&#39;C&#39;: 0.09077283474940925, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.002526417757312348}
+Loss is [-0.9070673344462994]
+Calculating loss for {&#39;C&#39;: 0.08567951488560228, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 1.0522108244005219e-05}
+Loss is [-0.1580411797440178]
+Calculating loss for {&#39;C&#39;: 1.9035478743608165, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 298.49953812653837}
+Loss is [-0.10072342793544797]
+gen	nevals	avg          	std        	min          	max          
+0  	10    	[-0.28174736]	[0.3288165]	[-0.96772398]	[-0.10072343]
+Calculating loss for {&#39;C&#39;: 0.09077283474940925, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.002526417757312348}
+Loss is [-0.9070673344462994]
+Calculating loss for {&#39;C&#39;: 1140.5426263798747, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 2.094124216624722e-06}
+Loss is [-0.9476905954368392]
+Calculating loss for {&#39;C&#39;: 0.18445781569344738, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 1.0522108244005219e-05}
+Loss is [-0.19031719532554256]
+Calculating loss for {&#39;C&#39;: 2.364783608235729, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496}
+Loss is [-0.9727323316638843]
+Calculating loss for {&#39;C&#39;: 0.3770940250090288, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 9402.812584317955}
+Loss is [-0.10072342793544797]
+Calculating loss for {&#39;C&#39;: 342.52552858536734, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 3.979422189106964e-05}
+Loss is [-0.9538119087367836]
+Calculating loss for {&#39;C&#39;: 37.612358782164776, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.002526417757312348}
+Loss is [-0.9632721202003339]
+1  	7     	[-0.70684474]	[0.36593114]	[-0.97273233]	[-0.10072343]
+Calculating loss for {&#39;C&#39;: 25.359556967494015, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 1.0522108244005219e-05}
+Loss is [-0.9515859766277128]
+Calculating loss for {&#39;C&#39;: 90.88766299120877, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.18912018070990808}
+Loss is [-0.1018363939899833]
+Calculating loss for {&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00016010548864384288}
+Loss is [-0.9677239844184753]
+Calculating loss for {&#39;C&#39;: 2.364783608235729, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496}
+Loss is [-0.9727323316638843]
+2  	4     	[-0.8786867] 	[0.2590384] 	[-0.97273233]	[-0.10183639]
+Calculating loss for {&#39;C&#39;: 6.340857718335152, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 6944.6779969379}
+Loss is [-0.10072342793544797]
+Calculating loss for {&#39;C&#39;: 1.085964509751384, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 7.981583922628336e-05}
+Loss is [-0.9437952142459655]
+Calculating loss for {&#39;C&#39;: 0.4691058706709815, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 410.66817442961525}
+Loss is [-0.10072342793544797]
+Calculating loss for {&#39;C&#39;: 9901.359072553396, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496}
+Loss is [-0.9744017807456873]
+Calculating loss for {&#39;C&#39;: 2.364783608235729, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00016010548864384288}
+Loss is [-0.9593767390094602]
+Calculating loss for {&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496}
+Loss is [-0.9744017807456873]
+Calculating loss for {&#39;C&#39;: 0.191638955526857, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 1.050881589158487e-06}
+Loss is [-0.15748469671675014]
+Calculating loss for {&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 9.24517286607817}
+Loss is [-0.10127991096271564]
+3  	8     	[-0.62526433]	[0.41696083]	[-0.97440178]	[-0.10072343]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After the iteration, the <a href="/eptune/quick.html#qtuneIterate"><code>qtuneIterate</code></a> instance store the results in itself.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qi</span><span class="o">.</span><span class="n">population</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{&#39;C&#39;: 6.340857718335152, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 6944.6779969379},
+ {&#39;C&#39;: 1.085964509751384, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 7.981583922628336e-05},
+ {&#39;C&#39;: 0.4691058706709815, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 410.66817442961525},
+ {&#39;C&#39;: 9901.359072553396, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496},
+ {&#39;C&#39;: 2.364783608235729, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00016010548864384288},
+ {&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496},
+ {&#39;C&#39;: 0.191638955526857, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 1.050881589158487e-06},
+ {&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 9.24517286607817},
+ {&#39;C&#39;: 2.364783608235729, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496},
+ {&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00016010548864384288}]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qi</span><span class="o">.</span><span class="n">hof</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[({&#39;C&#39;: 197.75053974020003, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496}, (-0.9744017807456873,)), ({&#39;C&#39;: 9901.359072553396, &#39;kernel&#39;: &#39;rbf&#39;, &#39;gamma&#39;: 0.00044545277111534496}, (-0.9744017807456873,))]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">qi</span><span class="o">.</span><span class="n">logbook</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;avg&#39;</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="More-control">More control<a class="anchor-link" href="#More-control"> </a></h2>
 </div>
 </div>

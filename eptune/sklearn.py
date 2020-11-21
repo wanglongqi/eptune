@@ -6,7 +6,7 @@ __all__ = ['ScikitLearner', 'ScikitLearnerCV']
 import sklearn
 
 from sklearn.metrics import *
-from functools import lru_cache, partial
+from functools import lru_cache
 
 
 class ScikitLearner:
